@@ -80,7 +80,7 @@ def ask_dexter_with_image(image_bytes, question=""):
         )
 
     response = client.responses.create(
-        model="gpt-5",
+        model="gpt-5.4",
         instructions=SYSTEM_PROMPT,
         input=[
             {
