@@ -60,7 +60,7 @@ Do not use excessive emojis.
 
 def ask_dexter(question):
     response = client.responses.create(
-        model="gpt-5.4 nano",
+        model="gpt-5.4",
         instructions=SYSTEM_PROMPT,
         input=question
     )
@@ -80,7 +80,7 @@ def ask_dexter_with_image(image_bytes, question=""):
         )
 
     response = client.responses.create(
-        model="gpt-5.4 nano",
+        model="gpt-5.4",
         instructions=SYSTEM_PROMPT,
         input=[
             {
