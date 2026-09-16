@@ -14,7 +14,7 @@ if not DATABASE_URL:
     raise ValueError("DATABASE_URL is missing")
 
 
-DAILY_LIMIT = 800
+DAILY_LIMIT = 7
 
 
 def get_connection():
