@@ -56,7 +56,7 @@ Dexter
 Telegram
 ```
 
-## Environment Variables
+## Environment Variables you should aquire
 
 ```env
 TELEGRAM_BOT_TOKEN=
