@@ -6,7 +6,7 @@ load_dotenv()
 
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
-RENDER_URL = "https://dexter-telegram-app.onrender.com"
+RENDER_URL = "https://dexter-telegram-app.onrender.com/telegram"
 
 url = f"https://api.telegram.org/bot{TOKEN}/setWebhook"
 
