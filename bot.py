@@ -149,7 +149,7 @@ def telegram_webhook():
             "• Git & GitHub\n"
             "• Data Structures\n"
             "• Screenshots & IT errors\n\n"
-            "You can send up to 8 messages per day."
+            "You can send up to 7 messages per day."
         )
 
         return "OK"
@@ -176,7 +176,7 @@ def telegram_webhook():
 
             send_message(
                 chat_id,
-                "You've reached your 8-message limit for today. "
+                "You've reached your 7-message limit for today. "
                 "Your limit will reset tomorrow."
             )
 
