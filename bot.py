@@ -2,40 +2,55 @@ import os
 import requests
 
 from flask import Flask, request
-
 from dotenv import load_dotenv
 
 from ai import ask_dexter
-from limiter import can_use
+from limiter import can_use, setup_database
 
 
 load_dotenv()
+
 
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 if not TOKEN:
     raise ValueError("TELEGRAM_BOT_TOKEN is missing")
 
+
 BASE_URL = f"https://api.telegram.org/bot{TOKEN}"
+
 
 app = Flask(__name__)
 
 
-def send_message(chat_id, text):
-    url = f"{BASE_URL}/sendMessage"
+# Create the database table if it doesn't exist
+setup_database()
 
-    requests.post(
-        url,
-        data={
-            "chat_id": chat_id,
-            "text": text
-        },
-        timeout=30
-    )
+
+def send_message(chat_id, text):
+
+    max_length = 4000
+
+    parts = [
+        text[i:i + max_length]
+        for i in range(0, len(text), max_length)
+    ]
+
+    for part in parts:
+
+        requests.post(
+            f"{BASE_URL}/sendMessage",
+            data={
+                "chat_id": chat_id,
+                "text": part
+            },
+            timeout=30
+        )
 
 
 @app.route("/", methods=["GET"])
 def home():
+
     return "Dexter is running."
 
 
@@ -47,31 +62,45 @@ def telegram_webhook():
     if not update:
         return "OK"
 
+
     message = update.get("message")
 
     if not message:
         return "OK"
 
+
     chat_id = message["chat"]["id"]
+
     text = message.get("text", "").strip()
 
     if not text:
         return "OK"
 
-    # Commands
+
+    # -------------------------
+    # /start
+    # -------------------------
+
     if text == "/start":
+
         send_message(
             chat_id,
             "Hello! I'm Dexter. 🤖\n\n"
             "I'm an IT-focused AI assistant.\n"
             "Ask me anything about programming, "
-            "databases, networking, cybersecurity, AI, "
-            "or other IT topics."
+            "databases, networking, cybersecurity, "
+            "AI, or other IT topics."
         )
 
         return "OK"
 
+
+    # -------------------------
+    # /help
+    # -------------------------
+
     if text == "/help":
+
         send_message(
             chat_id,
             "I'm Dexter, an IT-focused AI assistant.\n\n"
@@ -91,8 +120,13 @@ def telegram_webhook():
 
         return "OK"
 
+
+    # -------------------------
     # Daily limit
+    # -------------------------
+
     if not can_use(chat_id):
+
         send_message(
             chat_id,
             "You've reached your 8-message limit for today. "
@@ -101,8 +135,13 @@ def telegram_webhook():
 
         return "OK"
 
+
+    # -------------------------
     # Ask Dexter
+    # -------------------------
+
     try:
+
         answer = ask_dexter(text)
 
         send_message(chat_id, answer)
@@ -117,14 +156,15 @@ def telegram_webhook():
             "Please try again later."
         )
 
+
     return "OK"
 
 
 if __name__ == "__main__":
 
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 10000))
 
     app.run(
-        host="127.0.0.1",
-        port=8080
+        host="0.0.0.0",
+        port=port
     )
