@@ -123,7 +123,7 @@ def telegram_webhook():
             "• Networking\n"
             "• Data Structures\n\n"
             "Ask me an IT question and let's figure it out.\n\n"
-            "You have 8 messages per day."
+            
         )
 
         return "OK"
